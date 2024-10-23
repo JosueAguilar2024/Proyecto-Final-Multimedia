@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import static javax.management.Query.attr;
 import javax.swing.table.DefaultTableModel;
 
- 
 /**
  *
  * @author josue
@@ -26,6 +25,9 @@ public class Interfaz extends javax.swing.JFrame {
     private JTable tablaArchivos;
     private ReproductorMusica reproductorMusica;
     private JFXPanel jfxPanel; // Añadir JFXPanel
+  private ReproductorVideo reproductorVideos;
+  private GestionarArchivos gestionarArchivos;
+  
   
     /**
      * Creates new form Interfaz
@@ -35,6 +37,7 @@ public class Interfaz extends javax.swing.JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocation(250,150); 
         initComponents();
+        
         // Configuración del JFXPanel para reproducir videos
     JFXPanel videoPanel = new JFXPanel();
     reproductorVideo = new ReproductorVideo(videoPanel); // videoPanel es tu JFXPanel
@@ -50,7 +53,9 @@ public class Interfaz extends javax.swing.JFrame {
 
     modeloTabla = new DefaultTableModel(new String[]{"NOMBRE", "ARCHIVO", "AUTOR", "ALBUM", "GENERO", "TAMAÑO", "RUTA"}, 0);
 jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
-
+ GestionarArchivos gestionarArchivos = new GestionarArchivos(modeloTabla);
+ gestionarArchivos.listarArchivos();
+ 
     jTable = new JTable(); // Inicializar jTable
      // Asignar el modelo a la tabla
     jTable.setModel(modeloTabla);
@@ -59,7 +64,7 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
     // Añadir la tabla a un JScrollPane
         JScrollPane scrollPane = new JScrollPane(jTable);
         add(scrollPane, BorderLayout.CENTER); // Añadir JScrollPane a la interfaz
-
+          
      // Iniciar JavaFX en el hilo correcto
         Platform.runLater(() -> {
             // Puedes inicializar cualquier cosa de JavaFX aquí si es necesario
@@ -122,6 +127,7 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
+        Abrircarpeta = new java.awt.Button();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -497,6 +503,8 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
             .addGap(0, 170, Short.MAX_VALUE)
         );
 
+        Abrircarpeta.setLabel("Abrir Carpeta");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -532,7 +540,9 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
                                         .addGap(18, 18, 18)
                                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(botonBuscar))
+                                        .addComponent(botonBuscar)
+                                        .addGap(20, 20, 20)
+                                        .addComponent(Abrircarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addGap(32, 32, 32)
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -562,9 +572,10 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField1)
+                    .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Abrircarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(44, 44, 44)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -634,6 +645,25 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
    // Método para reproducir música usando JavaFX
 private ReproductorVideo reproductorVideo;
 
+private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
+    // Crear un JFileChooser para seleccionar carpetas
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+    int returnValue = fileChooser.showOpenDialog(this);
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+        File carpetaSeleccionada = fileChooser.getSelectedFile();
+
+        // Verificar si es un directorio válido
+        if (carpetaSeleccionada.isDirectory()) {
+            // Listar archivos en la carpeta seleccionada
+            listarArchivosEnCarpeta(carpetaSeleccionada);
+        } else {
+            JOptionPane.showMessageDialog(this, "La ruta seleccionada no es una carpeta válida.");
+        }
+    }
+}
+
     private void haciaAtrascancionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_haciaAtrascancionActionPerformed
         // Detener la reproducción actual
     reproductorMusica.detenerMusica();   
@@ -697,9 +727,9 @@ private ReproductorVideo reproductorVideo;
     private void playActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playActionPerformed
  int filaSeleccionada = jTable.getSelectedRow();
 
-    // Si no se ha seleccionado ninguna fila, seleccionamos la primera fila
+    // si no se selecciona nada que reproduzca la primera de la lista
     if (filaSeleccionada == -1) {
-        filaSeleccionada = 0; // Selecciona la primera fila (índice 0)
+        filaSeleccionada = 0; //selecion de la primera
         jTable.setRowSelectionInterval(0, 0); // Marca visualmente la selección en la tabla
     }
 
@@ -802,81 +832,13 @@ private String obtenerGenero(File archivo) {
     private void playVideoInPanel(String rutaArchivo) {
       reproductorVideo.reproducirVideo(rutaArchivo); // Llamar al método para reproducir el video
     }
-private void listarArchivos(File carpeta) {
-    modeloTabla.setRowCount(0); // Limpiar la tabla antes de listar los archivos
-    File[] archivos = carpeta.listFiles();
-    
-    if (archivos != null) {
-        
-        for (File archivo : archivos) {
-            if (archivo.isDirectory()) {
-                modeloTabla.addRow(new Object[]{
-                    "Carpeta: " + archivo.getName(), // NOMBRE
-                    "", // ARCHIVO
-                    "", // AUTOR
-                    "", // ALBUM
-                    "", // GENERO
-                    "", // TAMAÑO
-                    archivo.getAbsolutePath() // RUTA
-                });
-               
-                // Si deseas listar recursivamente
-                listarArchivos(archivo);
-            } else {
-                modeloTabla.addRow(new Object[]{
-                    archivo.getName(),               // NOMBRE
-                    archivo.getName(),               // ARCHIVO
-                    obtenerAutor(archivo),           // AUTOR
-                    obtenerAlbum(archivo),           // ALBUM
-                    obtenerGenero(archivo),          // GENERO
-                    archivo.length(),                // TAMAÑO
-                    archivo.getAbsolutePath()        // RUTA
-                });
-              
-            }
-        }
-    }
+private void listarArchivosDesdeInterfaz() {
+    gestionarArchivos.listarArchivos();
 }
 
-
-private void filtrarArchivos(File carpeta, String tipo) {
-    modeloTabla.setRowCount(0); // Limpiar la tabla antes de mostrar el filtro
-    File[] archivos = carpeta.listFiles();
-
-    if (archivos != null) {
-        for (File archivo : archivos) {
-            if (archivo.isDirectory()) {
-                listarArchivos(archivo); // Llamada recursiva para subcarpetas
-            } else {
-                String extension = getFileExtension(archivo).toLowerCase();
-                boolean agregar = switch (tipo) {
-                    case "todos" -> true;
-                    case "fotos" -> extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg");
-                    case "musica" -> extension.equals("mp3") || extension.equals("wav") || extension.equals("flac");
-                    case "videos" -> extension.equals("mp4") || extension.equals("avi") || extension.equals("mkv");
-                    default -> false;
-                };
-
-                if (agregar) {
-                    modeloTabla.addRow(new Object[]{archivo.getName(), archivo.length(), archivo.getAbsolutePath()});
-                }
-            }
-        }
-    } else {
-        System.out.println("No se encontraron archivos.");
-    }
+public void filtrarArchivosDesdeInterfaz(String tipo) {
+    gestionarArchivos.filtrarArchivos(tipo);
 }
-
-   
-private String getFileExtension(File archivo) {
-    String nombreArchivo = archivo.getName();
-    int lastIndexOfDot = nombreArchivo.lastIndexOf('.');
-    if (lastIndexOfDot == -1) {
-        return ""; // Sin extensión
-    }
-    return nombreArchivo.substring(lastIndexOfDot + 1);
-}
-
 
     
     /**
@@ -915,6 +877,7 @@ private String getFileExtension(File archivo) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Button Abrircarpeta;
     private javax.swing.JSlider Volumen;
     private javax.swing.JButton archivosBoton;
     private javax.swing.JButton borrarDuplicados;

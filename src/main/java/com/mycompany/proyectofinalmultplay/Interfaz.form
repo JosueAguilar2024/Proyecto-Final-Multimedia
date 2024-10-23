@@ -250,6 +250,8 @@
                                           <Component id="jTextField1" min="-2" pref="312" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="botonBuscar" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                                          <Component id="Abrircarpeta" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
@@ -293,9 +295,10 @@
               </Group>
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jTextField1" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="jTextField1" alignment="0" max="32767" attributes="0"/>
                       <Component id="botonBuscar" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
+                      <Component id="Abrircarpeta" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -710,6 +713,11 @@
             </DimensionLayout>
           </Layout>
         </Container>
+        <Component class="java.awt.Button" name="Abrircarpeta">
+          <Properties>
+            <Property name="label" type="java.lang.String" value="Abrir Carpeta"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JButton" name="jButton3">
