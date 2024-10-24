@@ -49,8 +49,10 @@ public class GestionarArchivos {
                     datos[5] = String.valueOf(archivo.length()); // TAMAÑO
                     datos[6] = archivo.getAbsolutePath(); // RUTA
                     modeloTabla.addRow(datos);
-                }
+                } else if (archivo.isDirectory()) {
+                // Si el archivo es un directorio, llamar recursivamente a la misma función
              listarArchivosEnCarpeta(archivo);
+            }
             }
         } else {
             JOptionPane.showMessageDialog(null, "No se encontraron archivos en la carpeta seleccionada.");
