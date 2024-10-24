@@ -33,7 +33,7 @@ public class GestionarArchivos {
     }
 
     // Método para listar archivos en la carpeta seleccionada
-    private void listarArchivosEnCarpeta(File carpeta) {
+    public void listarArchivosEnCarpeta(File carpeta) {
         modeloTabla.setRowCount(0); // Limpiar la tabla antes de listar
 
         File[] archivos = carpeta.listFiles();
@@ -50,12 +50,12 @@ public class GestionarArchivos {
                     datos[6] = archivo.getAbsolutePath(); // RUTA
                     modeloTabla.addRow(datos);
                 }
+             listarArchivosEnCarpeta(archivo);
             }
         } else {
             JOptionPane.showMessageDialog(null, "No se encontraron archivos en la carpeta seleccionada.");
         }
     }
-
     // Método para filtrar archivos por tipo (musica, videos, fotos)
     public void filtrarArchivos(String tipo) {
         JFileChooser fileChooser = new JFileChooser();
@@ -69,7 +69,7 @@ public class GestionarArchivos {
     }
 
     // Método para filtrar archivos en la carpeta seleccionada
-    private void filtrarArchivosEnCarpeta(File carpeta, String tipo) {
+    public void filtrarArchivosEnCarpeta(File carpeta, String tipo) {
         modeloTabla.setRowCount(0); // Limpiar la tabla antes de listar
 
         File[] archivos = carpeta.listFiles();
