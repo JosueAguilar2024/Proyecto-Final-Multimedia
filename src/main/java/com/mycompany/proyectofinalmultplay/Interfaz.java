@@ -53,8 +53,8 @@ public class Interfaz extends javax.swing.JFrame {
 
     modeloTabla = new DefaultTableModel(new String[]{"NOMBRE", "ARCHIVO", "AUTOR", "ALBUM", "GENERO", "TAMAÑO", "RUTA"}, 0);
 jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
- GestionarArchivos gestionarArchivos = new GestionarArchivos(modeloTabla);
- gestionarArchivos.listarArchivos();
+  // Inicializar la clase que gestiona los archivos
+    gestionarArchivos = new GestionarArchivos(modeloTabla);
  
     jTable = new JTable(); // Inicializar jTable
      // Asignar el modelo a la tabla
@@ -657,7 +657,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
         // Verificar si es un directorio válido
         if (carpetaSeleccionada.isDirectory()) {
             // Listar archivos en la carpeta seleccionada
-            listarArchivosEnCarpeta(carpetaSeleccionada);
+            gestionarArchivos.listarArchivosEnCarpeta(carpetaSeleccionada);
         } else {
             JOptionPane.showMessageDialog(this, "La ruta seleccionada no es una carpeta válida.");
         }
@@ -682,7 +682,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     
     // Obtener la ruta del archivo de la fila seleccionada
     String rutaArchivo = (String) modeloTabla.getValueAt(filaSeleccionada, 6);
-    String extension = getFileExtension(new File(rutaArchivo)).toLowerCase();
+    String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
     
     // Verificar si es un archivo de audio o video
     if (extension.equals("mp3") || extension.equals("wav") || extension.equals("flac")) {
@@ -712,7 +712,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     
     // Obtener la ruta del archivo de la fila seleccionada
     String rutaArchivo = (String) modeloTabla.getValueAt(filaSeleccionada, 6);
-    String extension = getFileExtension(new File(rutaArchivo)).toLowerCase();
+    String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
     
     // Verificar si es un archivo de audio o video
     if (extension.equals("mp3") || extension.equals("wav") || extension.equals("flac")) {
@@ -737,7 +737,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     if (modeloTabla.getRowCount() > 0) {
         // Obtener la ruta del archivo de la fila seleccionada
         String rutaArchivo = (String) modeloTabla.getValueAt(filaSeleccionada, 6);
-        String extension = getFileExtension(new File(rutaArchivo)).toLowerCase();
+        String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
 
         // Verificar si es un archivo de audio o video
         if (extension.equals("mp3") || extension.equals("wav") || extension.equals("flac")) {
@@ -761,7 +761,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
 
         // Verificar si la ruta es valida
         if (carpeta.exists() && carpeta.isDirectory()) {
-            listarArchivos(carpeta);
+            gestionarArchivos.listarArchivosEnCarpeta(carpeta);
         } else {
             JOptionPane.showMessageDialog(this, "La ruta ingresada no es válida o no es una carpeta.");
         }
@@ -772,7 +772,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     File carpeta = new File(rutaCarpeta);
     
     if (carpeta.exists() && carpeta.isDirectory()) {
-        filtrarArchivos(carpeta, "videos"); // Filtrar para mostrar solo videos
+        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta,"videos"); // Filtrar para mostrar solo videos
     } else {
         JOptionPane.showMessageDialog(this, "La ruta ingresada no es válida o no es una carpeta.");
     }
@@ -783,7 +783,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     File carpeta = new File(rutaCarpeta);
     
     if (carpeta.exists() && carpeta.isDirectory()) {
-        filtrarArchivos(carpeta, "musica"); // Filtrar para mostrar solo música
+        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta, "musica"); // Filtrar para mostrar solo música
     } else {
         JOptionPane.showMessageDialog(this, "La ruta ingresada no es valida o no es una carpeta.");
     }
@@ -794,7 +794,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     File carpeta = new File(rutaCarpeta);
     
     if (carpeta.exists() && carpeta.isDirectory()) {
-        filtrarArchivos(carpeta, "fotos"); // Filtrar para mostrar solo fotos
+        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta,"fotos"); // Filtrar para mostrar solo fotos
     } else {
         JOptionPane.showMessageDialog(this, "La ruta ingresada no es valida o no es una carpeta.");
     }
@@ -805,7 +805,7 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     File carpeta = new File(rutaCarpeta);
     
     if (carpeta.exists() && carpeta.isDirectory()) {
-        filtrarArchivos(carpeta, "todos"); // Filtrar para mostrar todos los archivos
+        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta,"todos"); // Filtrar para mostrar todos los archivos
     } else {
         JOptionPane.showMessageDialog(this, "La ruta ingresada no es valida o no es una carpeta.");
     }
