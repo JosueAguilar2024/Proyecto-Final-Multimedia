@@ -65,6 +65,8 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
         JScrollPane scrollPane = new JScrollPane(jTable);
         add(scrollPane, BorderLayout.CENTER); // Añadir JScrollPane a la interfaz
           
+         // Añadir botón "Abrir Carpeta"
+     
      // Iniciar JavaFX en el hilo correcto
         Platform.runLater(() -> {
             // Puedes inicializar cualquier cosa de JavaFX aquí si es necesario
@@ -503,7 +505,13 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
             .addGap(0, 170, Short.MAX_VALUE)
         );
 
+        Abrircarpeta.setBackground(new java.awt.Color(153, 153, 153));
         Abrircarpeta.setLabel("Abrir Carpeta");
+        Abrircarpeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AbrircarpetaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -645,24 +653,6 @@ jTable.setModel(modeloTabla); // Asigna el modelo a la tabla
    // Método para reproducir música usando JavaFX
 private ReproductorVideo reproductorVideo;
 
-private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
-    // Crear un JFileChooser para seleccionar carpetas
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-    int returnValue = fileChooser.showOpenDialog(this);
-    if (returnValue == JFileChooser.APPROVE_OPTION) {
-        File carpetaSeleccionada = fileChooser.getSelectedFile();
-
-        // Verificar si es un directorio válido
-        if (carpetaSeleccionada.isDirectory()) {
-            // Listar archivos en la carpeta seleccionada
-            gestionarArchivos.listarArchivosEnCarpeta(carpetaSeleccionada);
-        } else {
-            JOptionPane.showMessageDialog(this, "La ruta seleccionada no es una carpeta válida.");
-        }
-    }
-}
 
     private void haciaAtrascancionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_haciaAtrascancionActionPerformed
         // Detener la reproducción actual
@@ -814,6 +804,25 @@ private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrircarpetaActionPerformed
+// Crear un JFileChooser para seleccionar carpetas
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+    int returnValue = fileChooser.showOpenDialog(this);
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+        File carpetaSeleccionada = fileChooser.getSelectedFile();
+
+        // Verificar si es un directorio válido
+        if (carpetaSeleccionada.isDirectory()) {
+            // Listar archivos en la carpeta seleccionada
+            gestionarArchivos.listarArchivosEnCarpeta(carpetaSeleccionada);
+        } else {
+            JOptionPane.showMessageDialog(this, "La ruta seleccionada no es una carpeta válida.");
+        }
+    }
+    }//GEN-LAST:event_AbrircarpetaActionPerformed
      private String obtenerAutor(File archivo) {
     // Implementa la lógica para obtener el autor si es un archivo multimedia
     return ""; // Si no aplica, retorna un string vacío
