@@ -15,7 +15,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 import static javax.management.Query.attr;
 import javax.swing.table.DefaultTableModel;
-
+//seguis arreglando lo de mas echando andar el proyectito...
 /**
  *
  * @author josue
@@ -758,35 +758,41 @@ private ReproductorVideo reproductorVideo;
     }//GEN-LAST:event_botonBuscarActionPerformed
 
     private void videosBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_videosBotonActionPerformed
-    String rutaCarpeta = jTextField1.getText();
-    File carpeta = new File(rutaCarpeta);
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     
-    if (carpeta.exists() && carpeta.isDirectory()) {
-        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta,"videos"); // Filtrar para mostrar solo videos
+    int result = fileChooser.showOpenDialog(this);
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File carpeta = fileChooser.getSelectedFile();
+        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta, "videos"); // Filtrar para mostrar solo videos
     } else {
-        JOptionPane.showMessageDialog(this, "La ruta ingresada no es válida o no es una carpeta.");
+        JOptionPane.showMessageDialog(this, "No se selecciono ninguna carpeta.");
     }
     }//GEN-LAST:event_videosBotonActionPerformed
 
     private void musicaBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicaBotonActionPerformed
-        String rutaCarpeta = jTextField1.getText();
-    File carpeta = new File(rutaCarpeta);
-    
-    if (carpeta.exists() && carpeta.isDirectory()) {
+       JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+    int result = fileChooser.showOpenDialog(this);
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File carpeta = fileChooser.getSelectedFile();
         gestionarArchivos.filtrarArchivosEnCarpeta(carpeta, "musica"); // Filtrar para mostrar solo música
     } else {
-        JOptionPane.showMessageDialog(this, "La ruta ingresada no es valida o no es una carpeta.");
+        JOptionPane.showMessageDialog(this, "No se seleccionó ninguna carpeta.");
     }
     }//GEN-LAST:event_musicaBotonActionPerformed
 
     private void fotosBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fotosBotonActionPerformed
-       String rutaCarpeta = jTextField1.getText();
-    File carpeta = new File(rutaCarpeta);
-    
-    if (carpeta.exists() && carpeta.isDirectory()) {
-        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta,"fotos"); // Filtrar para mostrar solo fotos
+       JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+    int result = fileChooser.showOpenDialog(this);
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File carpeta = fileChooser.getSelectedFile();
+        gestionarArchivos.filtrarArchivosEnCarpeta(carpeta, "fotos"); // Filtrar para mostrar solo fotos
     } else {
-        JOptionPane.showMessageDialog(this, "La ruta ingresada no es valida o no es una carpeta.");
+        JOptionPane.showMessageDialog(this, "No se seleccionó ninguna carpeta.");
     }
     }//GEN-LAST:event_fotosBotonActionPerformed
 
