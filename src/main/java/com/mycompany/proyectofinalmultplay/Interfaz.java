@@ -42,43 +42,45 @@ public class Interfaz extends javax.swing.JFrame {
         setLocation(250,150); 
         initComponents();
         
-        // Agrega el Listener después de inicializar los componentes
-    jTable.addMouseListener(new java.awt.event.MouseAdapter() {
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-            jTableMouseClicked(evt);
-        }
-    });
 
         // Configuración del JFXPanel para reproducir videos
     JFXPanel videoPanel = new JFXPanel();
 
     reproductorVideo = new ReproductorVideo(videoPanel); // videoPanel es tu JFXPanel
 
-    jPanel7.setLayout(new BorderLayout());
-    jPanel7.add(videoPanel, BorderLayout.CENTER); // Añadir el JFXPanel al jPanel7
-    
+
         reproductorMusica = new ReproductorMusica();
         // Configuración del JFXPanel
        
-  
     modeloTabla = new DefaultTableModel(new String[]{"NOMBRE", "ARCHIVO", "AUTOR", "ALBUM", "GENERO", "TAMAÑO", "RUTA"}, 0);
-    jTable.setModel(modeloTabla); // Asigna el modelo a la tabla 
-    jTable = new JTable(modeloTabla); // Asignar el modelo a jTable
-    jTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    // Inicializar la clase que gestiona los archivos
+  jTable1.setModel(modeloTabla); // Asigna el modelo a la tabla
+    jTable1 = new JTable(modeloTabla); // Asignar el modelo a jTable
+     
+     // Configuración de la selección de fila única
+        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  
+    jTable1 = new JTable(); // Inicializar jTable
+jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+    @Override
+    public void mouseClicked(java.awt.event.MouseEvent evt) {
+        filaSeleccionada = jTable1.rowAtPoint(evt.getPoint());
+        if (filaSeleccionada != -1) {
+            String nombreArchivo = jTable1.getValueAt(filaSeleccionada, 1).toString();
+            rutaArchivoSeleccionado = obtenerRutaArchivo(filaSeleccionada); // Guarda la ruta del archivo
+            System.out.println("Fila seleccionada: " + filaSeleccionada + " - Archivo: " + nombreArchivo);
+        } else {
+            System.out.println("No se seleccionó ninguna fila.");
+        }
+    }
+});
+
+// Inicializar la clase que gestiona los archivos
     gestionarArchivos = new GestionarArchivos(modeloTabla);
 
-      jTable = new JTable(); // Inicializar jTable
-     // Asignar el modelo a la tabla
-   
-    
-
     // Añadir la tabla a un JScrollPane
-        JScrollPane scrollPane = new JScrollPane(jTable);
+        JScrollPane scrollPane = new JScrollPane(jTable1);
         add(scrollPane, BorderLayout.CENTER); // Añadir JScrollPane a la interfaz
-          
-         // Añadir botón "Abrir Carpeta"
-     
+         
      // Iniciar JavaFX en el hilo correcto
         Platform.runLater(() -> {
             // Puedes inicializar cualquier cosa de JavaFX aquí si es necesario
@@ -138,10 +140,9 @@ public class Interfaz extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
         Abrircarpeta = new java.awt.Button();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable = new javax.swing.JTable();
+        jTable1 = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -320,7 +321,7 @@ public class Interfaz extends javax.swing.JFrame {
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 107, Short.MAX_VALUE)
+            .addGap(0, 124, Short.MAX_VALUE)
         );
 
         botonBuscar.setBackground(new java.awt.Color(204, 204, 204));
@@ -392,19 +393,6 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\josue\\OneDrive\\Documentos\\Proyecto 2\\Proyecto2\\src\\main\\java\\IMAGENES\\voice.png")); // NOI18N
 
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 186, Short.MAX_VALUE)
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-
         Abrircarpeta.setBackground(new java.awt.Color(153, 153, 153));
         Abrircarpeta.setLabel("Abrir Carpeta");
         Abrircarpeta.addActionListener(new java.awt.event.ActionListener() {
@@ -413,20 +401,19 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        jTable.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "NOMBRE", "ARCHIVO", "AUTOR", "ALBUM", "GENERO", "TAMAÑO", "RUTA"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTableMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTable);
+        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -437,9 +424,7 @@ public class Interfaz extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(45, 45, 45)
-                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -475,8 +460,8 @@ public class Interfaz extends javax.swing.JFrame {
                                                 .addComponent(videosBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(fotosBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(archivosBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                        .addGap(32, 32, 32)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 752, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 764, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -490,11 +475,15 @@ public class Interfaz extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(100, 100, 100)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 467, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addContainerGap(31, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jTextField1)
                     .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -509,41 +498,30 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(videosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(borrarDuplicados)
-                .addGap(108, 108, 108)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(193, 193, 193)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(saltarmusica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(play, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(haciaAtrascancion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(verLetra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(saltarmusica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(play, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(haciaAtrascancion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(verLetra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(8, 8, 8)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2))
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGap(24, 24, 24)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGap(27, 27, 27)
-                                    .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69))))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(93, 93, 93)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jButton2))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(24, 24, 24)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(27, 27, 27)
+                            .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jButton3.setText("jButton3");
@@ -560,9 +538,7 @@ public class Interfaz extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -570,15 +546,15 @@ public class Interfaz extends javax.swing.JFrame {
    // Método para reproducir música usando JavaFX
 private ReproductorVideo reproductorVideo;
 // Variable para almacenar la ruta del archivo seleccionado
-
-private String rutaArchivoSeleccionado = null; // Variable de instancia
+private int filaSeleccionada = -1; // Variable para guardar la fila seleccionada
+private String rutaArchivoSeleccionado; // Variable de instancia
 
 
     private void haciaAtrascancionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_haciaAtrascancionActionPerformed
         // Detener la reproducción actual
     reproductorMusica.detenerMusica();   
 // Obtener la fila seleccionada
-    int filaSeleccionada = jTable.getSelectedRow();
+    int filaSeleccionada = jTable1.getSelectedRow();
     
     // Si no hay una selección, reproducimos desde la última canción
     if (filaSeleccionada == -1 || filaSeleccionada == 0) {
@@ -588,7 +564,7 @@ private String rutaArchivoSeleccionado = null; // Variable de instancia
     }
     
     // Seleccionar la fila en la tabla
-    jTable.setRowSelectionInterval(filaSeleccionada, filaSeleccionada);
+    jTable1.setRowSelectionInterval(filaSeleccionada, filaSeleccionada);
     
     // Obtener la ruta del archivo de la fila seleccionada
     String rutaArchivo = (String) modeloTabla.getValueAt(filaSeleccionada, 6);
@@ -605,12 +581,12 @@ private String rutaArchivoSeleccionado = null; // Variable de instancia
     }//GEN-LAST:event_haciaAtrascancionActionPerformed
 
     private void saltarmusicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saltarmusicaActionPerformed
-   int filaSeleccionada = jTable.getSelectedRow();
+   int filaSeleccionada = jTable1.getSelectedRow();
     int totalFilas = modeloTabla.getRowCount();
 
     if (filaSeleccionada < totalFilas - 1) {
         // Selecciona la siguiente fila si no es la última
-        jTable.setRowSelectionInterval(filaSeleccionada + 1, filaSeleccionada + 1);
+        jTable1.setRowSelectionInterval(filaSeleccionada + 1, filaSeleccionada + 1);
         playActionPerformed(evt); // Reproducir el siguiente archivo automáticamente
     } else {
         JOptionPane.showMessageDialog(this, "No hay más archivos para reproducir.");
@@ -618,16 +594,19 @@ private String rutaArchivoSeleccionado = null; // Variable de instancia
     }//GEN-LAST:event_saltarmusicaActionPerformed
 
     private void playActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playActionPerformed
-     if (rutaArchivoSeleccionado != null && !rutaArchivoSeleccionado.isEmpty()) {
-        reproducirArchivo(rutaArchivoSeleccionado); // Reproduce el archivo seleccionado
+      if (filaSeleccionada != -1) {
+        String rutaArchivo = obtenerRutaArchivo(filaSeleccionada); // Usa la fila seleccionada
+        System.out.println("Reproduciendo archivo: " + rutaArchivo);
+        reproducirArchivo(rutaArchivo); // Llama al método para iniciar la reproducción
     } else {
-        mostrarMensaje("No se ha seleccionado un archivo para reproducir.");
+        System.out.println("Por favor, selecciona una fila antes de presionar 'Play'.");
     }
     }//GEN-LAST:event_playActionPerformed
 
+
     // Reproduce un archivo dependiendo de su tipo (música o video)
     private void reproducirArchivo(String rutaArchivo) {
-        String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
+            String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
         if (esArchivoMusica(extension)) {
             reproductorMusica.reproducirMusica(rutaArchivo);
         } else if (esArchivoVideo(extension)) {
@@ -653,7 +632,7 @@ private String rutaArchivoSeleccionado = null; // Variable de instancia
  
  // Obtiene la ruta del archivo en la fila seleccionada
     private String obtenerRutaArchivo(int fila) {
-    Object valorCelda = jTable.getValueAt(fila, 5); // Ajusta el índice de columna según corresponda a "RUTA"
+    Object valorCelda = jTable1.getValueAt(fila, 6); // Ajusta el índice de columna según corresponda a "RUTA"
     
     // Aseguramos que el valor no sea nulo y sea un String
     return (valorCelda != null) ? valorCelda.toString() : "";
@@ -689,21 +668,6 @@ gestionarArchivos.seleccionarCarpeta(); // Selecciona la carpeta y la guarda en 
     private void borrarDuplicadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarDuplicadosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_borrarDuplicadosActionPerformed
-
-    private void jTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableMouseClicked
-      int filaSeleccionada = jTable.getSelectedRow();
-    if (filaSeleccionada != -1) {
-        Object rutaObjeto = jTable.getValueAt(filaSeleccionada, 6); // Cambia 6 por el índice correcto si es necesario
-        if (rutaObjeto != null) {
-            rutaArchivoSeleccionado = rutaObjeto.toString();
-            mostrarMensaje("Archivo seleccionado: " + rutaArchivoSeleccionado);
-        } else {
-            mostrarMensaje("La ruta del archivo está vacía.");
-        }
-    } else {
-        mostrarMensaje("No se ha seleccionado ningún archivo");
-    }
-    }//GEN-LAST:event_jTableMouseClicked
 
 
 private String obtenerGenero(File archivo) {
@@ -796,13 +760,12 @@ public void filtrarArchivosDesdeInterfaz(String tipo) {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JPopupMenu jPopupMenu2;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private java.awt.Menu menu1;
     private java.awt.Menu menu2;
