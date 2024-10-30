@@ -21,10 +21,10 @@ public class ReproductorVideo {
     // Constructor modificado para aceptar un JFXPanel como parámetro
     public ReproductorVideo(JFXPanel jfxPanel) {
         videoFrame = new JFrame("Reproductor de Video");
-        videoFrame.setSize(600, 400);
-        videoFrame.setLocation(250,150); 
+        videoFrame.setSize(600, 430);
+        videoFrame.setLocation(500,300); 
         videoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        videoFrame.add(jfxPanel); // Agrega el panel JavaFX al marco
+        videoFrame.add(jfxPanel); //
 
         // Crear el MediaView y configurarlo en una escena de JavaFX
         mediaView = new MediaView();
