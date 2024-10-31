@@ -8,6 +8,10 @@ import java.io.File;
 import javax.print.attribute.standard.Media;
 import javax.swing.JOptionPane;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.*;
 import java.io.File;
 import javafx.application.Platform;
@@ -19,72 +23,61 @@ import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import java.awt.event.ActionEvent;
-//seguis arreglando lo de mas echando andar el proyectito...
+import java.util.ArrayList;
+import java.util.HashSet;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 /**
  *
  * @author josue
  */
 public class Interfaz extends javax.swing.JFrame {
- private DefaultTableModel modeloTabla;
-  private JTable tablaArchivos;
-    private ReproductorMusica reproductorMusica;
-    private JFXPanel jfxPanel; // Añadir JFXPanel
-  private ReproductorVideo reproductorVideos;
+  private DefaultTableModel modeloTabla;
+  private ReproductorMusica reproductorMusica;
+  private JFXPanel jfxPanel; // Añadir JFXPanel
+  private ReproductorVideo reproductorVideo;
   private GestionarArchivos gestionarArchivos;
-  
-  
+  private MostrarFotos mostrarFotos;
+  private String rutaArchivoSeleccionado; // Variable de instancia
+
+
     /**
      * Creates new form Interfaz
      */
     public Interfaz() {
-        setTitle("APPLE MUSIC");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocation(250,150); 
-        initComponents();
-        
+    setTitle("APPLE MUSIC PRO");
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setLocation(250,150); 
+    initComponents();
 
-        // Configuración del JFXPanel para reproducir videos
+    // Configuración del JFXPanel para reproducir videos
     JFXPanel videoPanel = new JFXPanel();
-
     reproductorVideo = new ReproductorVideo(videoPanel); // videoPanel es tu JFXPanel
 
-
-        reproductorMusica = new ReproductorMusica();
-        // Configuración del JFXPanel
-       
+    reproductorMusica = new ReproductorMusica();
+   
+    // Configuración del modelo de la tabla
     modeloTabla = new DefaultTableModel(new String[]{"NOMBRE", "ARCHIVO", "AUTOR", "ALBUM", "GENERO", "TAMAÑO", "RUTA"}, 0);
-  jTable1.setModel(modeloTabla); // Asigna el modelo a la tabla
-    jTable1 = new JTable(modeloTabla); // Asignar el modelo a jTable
-     
-     // Configuración de la selección de fila única
-        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-  
-    jTable1 = new JTable(); // Inicializar jTable
-jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-    @Override
-    public void mouseClicked(java.awt.event.MouseEvent evt) {
-        filaSeleccionada = jTable1.rowAtPoint(evt.getPoint());
-        if (filaSeleccionada != -1) {
-            String nombreArchivo = jTable1.getValueAt(filaSeleccionada, 1).toString();
-            rutaArchivoSeleccionado = obtenerRutaArchivo(filaSeleccionada); // Guarda la ruta del archivo
-            System.out.println("Fila seleccionada: " + filaSeleccionada + " - Archivo: " + nombreArchivo);
-        } else {
-            System.out.println("No se seleccionó ninguna fila.");
-        }
-    }
-});
+    jTable1.setModel(modeloTabla); // Asigna el modelo a la tabla
+    
+    // Configuración de la selección de fila única
+    jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-// Inicializar la clase que gestiona los archivos
+    // Añadir un listener para detectar selección de filas
+    jTable1.getSelectionModel().addListSelectionListener(e -> gestionarSeleccion());
+
+    // Inicializar la clase que gestiona los archivos
     gestionarArchivos = new GestionarArchivos(modeloTabla);
+    reproductorMusica = new ReproductorMusica();
+    mostrarFotos = new MostrarFotos();
+    // Iniciar JavaFX en el hilo correcto
+    Platform.runLater(() -> {
+        // Puedes inicializar cualquier cosa de JavaFX aquí si es necesario
+    });
+     
+    pack(); // Ajusta el tamaño de la ventana automáticamente según sus componentes
 
-    // Añadir la tabla a un JScrollPane
-        JScrollPane scrollPane = new JScrollPane(jTable1);
-        add(scrollPane, BorderLayout.CENTER); // Añadir JScrollPane a la interfaz
-         
-     // Iniciar JavaFX en el hilo correcto
-        Platform.runLater(() -> {
-            // Puedes inicializar cualquier cosa de JavaFX aquí si es necesario
-        });
   }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -143,6 +136,8 @@ jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
         Abrircarpeta = new java.awt.Button();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        VerDuplicados = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -321,7 +316,7 @@ jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 124, Short.MAX_VALUE)
+            .addGap(0, 49, Short.MAX_VALUE)
         );
 
         botonBuscar.setBackground(new java.awt.Color(204, 204, 204));
@@ -338,6 +333,7 @@ jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
         borrarDuplicados.setForeground(new java.awt.Color(255, 255, 255));
         borrarDuplicados.setIcon(new javax.swing.ImageIcon("C:\\Users\\josue\\OneDrive\\Desktop\\Proyecto\\delete.png")); // NOI18N
         borrarDuplicados.setText("Borrar Duplicados");
+        borrarDuplicados.setActionCommand("Borrar Duplicados");
         borrarDuplicados.setBorderPainted(false);
         borrarDuplicados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -401,19 +397,35 @@ jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             }
         });
 
+        jTable1.setAutoCreateRowSorter(true);
+        jTable1.setBackground(new java.awt.Color(102, 102, 102));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "NOMBRE", "ARCHIVO", "AUTOR", "ALBUM", "GENERO", "TAMAÑO", "RUTA"
             }
         ));
-        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(jTable1);
+
+        VerDuplicados.setBackground(new java.awt.Color(51, 51, 51));
+        VerDuplicados.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        VerDuplicados.setForeground(new java.awt.Color(255, 255, 255));
+        VerDuplicados.setIcon(new javax.swing.ImageIcon("C:\\Users\\josue\\OneDrive\\Desktop\\Proyecto\\delete.png")); // NOI18N
+        VerDuplicados.setText("Ver Duplicados");
+        VerDuplicados.setBorderPainted(false);
+        VerDuplicados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                VerDuplicadosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -450,18 +462,21 @@ jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(botonBuscar)
                                         .addGap(20, 20, 20)
-                                        .addComponent(Abrircarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(Abrircarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(96, 96, 96)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addGap(32, 32, 32)
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(borrarDuplicados)
                                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                                 .addComponent(musicaBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(videosBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(fotosBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(archivosBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 764, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(archivosBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(VerDuplicados)
+                                            .addComponent(borrarDuplicados, javax.swing.GroupLayout.Alignment.TRAILING))
+                                        .addGap(31, 31, 31)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 731, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -475,53 +490,61 @@ jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(100, 100, 100)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 467, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1)
-                    .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Abrircarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(44, 44, 44)
-                .addComponent(archivosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(fotosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(musicaBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(videosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(borrarDuplicados)
-                .addGap(193, 193, 193)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(saltarmusica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(play, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(haciaAtrascancion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(verLetra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(8, 8, 8)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField1)
+                            .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Abrircarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(44, 44, 44)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(archivosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(fotosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(musicaBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(videosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addComponent(VerDuplicados)
+                                .addGap(18, 18, 18)
+                                .addComponent(borrarDuplicados))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(saltarmusica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(play, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(haciaAtrascancion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(verLetra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(24, 24, 24)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(27, 27, 27)
+                                    .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(60, 60, 60))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(24, 24, 24)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(27, 27, 27)
-                            .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52))
         );
 
         jButton3.setText("jButton3");
@@ -534,21 +557,21 @@ jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 983, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 826, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-   // Método para reproducir música usando JavaFX
-private ReproductorVideo reproductorVideo;
+
 // Variable para almacenar la ruta del archivo seleccionado
 private int filaSeleccionada = -1; // Variable para guardar la fila seleccionada
-private String rutaArchivoSeleccionado; // Variable de instancia
-
 
     private void haciaAtrascancionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_haciaAtrascancionActionPerformed
         // Detener la reproducción actual
@@ -562,68 +585,86 @@ private String rutaArchivoSeleccionado; // Variable de instancia
     } else {
         filaSeleccionada--; // Mover hacia la canción anterior
     }
-    
     // Seleccionar la fila en la tabla
     jTable1.setRowSelectionInterval(filaSeleccionada, filaSeleccionada);
-    
-    // Obtener la ruta del archivo de la fila seleccionada
-    String rutaArchivo = (String) modeloTabla.getValueAt(filaSeleccionada, 6);
-    String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
-    
-    // Verificar si es un archivo de audio o video
-    if (extension.equals("mp3") || extension.equals("wav") || extension.equals("flac")) {
-        reproductorMusica.reproducirMusica(rutaArchivo); // Reproducir la música
-    } else if (extension.equals("mp4") || extension.equals("avi") || extension.equals("mkv")) {
-        playVideoInPanel(rutaArchivo); // Reproducir el video
-    } else {
-        JOptionPane.showMessageDialog(this, "Formato no soportado.");
-    }
+    reproducirArchivoSeleccionado();
     }//GEN-LAST:event_haciaAtrascancionActionPerformed
 
     private void saltarmusicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saltarmusicaActionPerformed
+   reproductorMusica.detenerMusica();  
    int filaSeleccionada = jTable1.getSelectedRow();
     int totalFilas = modeloTabla.getRowCount();
 
     if (filaSeleccionada < totalFilas - 1) {
         // Selecciona la siguiente fila si no es la última
         jTable1.setRowSelectionInterval(filaSeleccionada + 1, filaSeleccionada + 1);
-        playActionPerformed(evt); // Reproducir el siguiente archivo automáticamente
+       reproducirArchivoSeleccionado(); // Reproducir el siguiente archivo automáticamente
     } else {
-        JOptionPane.showMessageDialog(this, "No hay más archivos para reproducir.");
+        JOptionPane.showMessageDialog(this, "No hay mas archivos para reproducir.");
     }
     }//GEN-LAST:event_saltarmusicaActionPerformed
+private void gestionarSeleccion() {
+    int filaSeleccionada = jTable1.getSelectedRow();
+    if (filaSeleccionada != -1) {
+        rutaArchivoSeleccionado = (String) modeloTabla.getValueAt(filaSeleccionada, 6); // Suponiendo que la ruta está en la columna 6
+       
+    } else {
+        mostrarMensaje("No se ha seleccionado ninguna fila.");
+    }
+}
 
     private void playActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playActionPerformed
-      if (filaSeleccionada != -1) {
-        String rutaArchivo = obtenerRutaArchivo(filaSeleccionada); // Usa la fila seleccionada
-        System.out.println("Reproduciendo archivo: " + rutaArchivo);
-        reproducirArchivo(rutaArchivo); // Llama al método para iniciar la reproducción
+        reproductorMusica.detenerMusica();
+        // selección actual de la tabla
+    int selectedRow = jTable1.getSelectedRow();
+   //selecccionado
+    if (selectedRow != -1) {
+       reproducirArchivoSeleccionado(); // Reproduce el archivo de la fila seleccionada
     } else {
-        System.out.println("Por favor, selecciona una fila antes de presionar 'Play'.");
+     mostrarMensaje("Selecciona un archivo para reproducir");
     }
     }//GEN-LAST:event_playActionPerformed
 
+private void reproducirArchivoSeleccionado() {
+    int filaSeleccionada = jTable1.getSelectedRow();
+    if (filaSeleccionada >= 0 && filaSeleccionada < modeloTabla.getRowCount()) {
+        String rutaArchivo = obtenerRutaArchivo(filaSeleccionada);
+        reproducirArchivo(rutaArchivo);
+    } else {
+        mostrarMensaje("SelecciOn invalida.");
+    }
+}
 
     // Reproduce un archivo dependiendo de su tipo (música o video)
     private void reproducirArchivo(String rutaArchivo) {
-            String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
-        if (esArchivoMusica(extension)) {
-            reproductorMusica.reproducirMusica(rutaArchivo);
-        } else if (esArchivoVideo(extension)) {
-            reproductorVideo.reproducirVideo(rutaArchivo);
-        } else {
-            mostrarMensaje("Formato no soportado.");
-        }
+   if (modeloTabla.getRowCount() == 0) {
+        JOptionPane.showMessageDialog(this, "No hay archivos en la lista para reproducir. Selecciona una carpeta primero.");
+        return;
+    }
+
+    String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
+
+    if (esArchivoMusica(extension)) {
+        reproductorMusica.reproducirMusica(rutaArchivo);
+    } else if (esArchivoVideo(extension)) {
+        playVideoInPanel(rutaArchivo);
+        }else if (esArchivoImagen(extension)){
+           mostrarFotos.mostrarFoto(rutaArchivo);
+    } else {
+        mostrarMensaje("Formato no soportado.");
+    }
     }
      // Comprueba si la extensión corresponde a un archivo de música
     private boolean esArchivoMusica(String extension) {
         return extension.equals("mp3") || extension.equals("wav") || extension.equals("flac");
     }
-
     // Comprueba si la extensión corresponde a un archivo de video
     private boolean esArchivoVideo(String extension) {
         return extension.equals("mp4") || extension.equals("avi") || extension.equals("mkv");
     }
+     private boolean esArchivoImagen(String extension) {
+          return extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg") || extension.equals("gif");
+      }
 
     // Muestra un mensaje en un cuadro de diálogo
     private void mostrarMensaje(String mensaje) {
@@ -634,7 +675,7 @@ private String rutaArchivoSeleccionado; // Variable de instancia
     private String obtenerRutaArchivo(int fila) {
     Object valorCelda = jTable1.getValueAt(fila, 6); // Ajusta el índice de columna según corresponda a "RUTA"
     
-    // Aseguramos que el valor no sea nulo y sea un String
+   // Aseguramos que el valor no sea nulo y sea un String
     return (valorCelda != null) ? valorCelda.toString() : "";
     }
     private void botonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarActionPerformed
@@ -642,15 +683,15 @@ private String rutaArchivoSeleccionado; // Variable de instancia
     }//GEN-LAST:event_botonBuscarActionPerformed
 
     private void videosBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_videosBotonActionPerformed
-    gestionarArchivos.filtrarArchivosPorTipo("videos"); // Filtra archivos de videos en la carpeta seleccionada
+    gestionarArchivos.filtrarArchivosPorTipo("videos"); 
     }//GEN-LAST:event_videosBotonActionPerformed
 
     private void musicaBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicaBotonActionPerformed
-gestionarArchivos.filtrarArchivosPorTipo("musica"); // Filtra archivos de música en la carpeta seleccionada
+gestionarArchivos.filtrarArchivosPorTipo("musica"); 
     }//GEN-LAST:event_musicaBotonActionPerformed
 
     private void fotosBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fotosBotonActionPerformed
-    gestionarArchivos.filtrarArchivosPorTipo("fotos"); // Filtra archivos de fotos en la carpeta seleccionada
+    gestionarArchivos.filtrarArchivosPorTipo("fotos"); 
     }//GEN-LAST:event_fotosBotonActionPerformed
 
     private void archivosBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivosBotonActionPerformed
@@ -658,41 +699,38 @@ gestionarArchivos.filtrarArchivosPorTipo("musica"); // Filtra archivos de músic
     }//GEN-LAST:event_archivosBotonActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+        //usaba para pegar la ruta de la carpeta 
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrircarpetaActionPerformed
 gestionarArchivos.seleccionarCarpeta(); // Selecciona la carpeta y la guarda en selectedFolderPath
+  listarArchivosDesdeInterfaz(); // 
     }//GEN-LAST:event_AbrircarpetaActionPerformed
 
     private void borrarDuplicadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarDuplicadosActionPerformed
-        // TODO add your handling code here:
+ 
     }//GEN-LAST:event_borrarDuplicadosActionPerformed
 
+    private void VerDuplicadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerDuplicadosActionPerformed
 
-private String obtenerGenero(File archivo) {
-    // Implementa la lógica para obtener el género
-    return "";
-}
+    }//GEN-LAST:event_VerDuplicadosActionPerformed
+
  // Método para reproducir video en jPanel7 usando la clase ReproductorVideo
     private void playVideoInPanel(String rutaArchivo) {
       reproductorVideo.reproducirVideo(rutaArchivo); // Llamar al método para reproducir el video
     }
 private void listarArchivosDesdeInterfaz() {
-      if (gestionarArchivos != null && gestionarArchivos.getCarpetaSeleccionada() != null) {
+   if (gestionarArchivos != null && gestionarArchivos.getCarpetaSeleccionada() != null) {
         gestionarArchivos.filtrarArchivosEnCarpeta(gestionarArchivos.getCarpetaSeleccionada(), "todos"); // Listar todos los archivos
-    } else {
-        JOptionPane.showMessageDialog(null, "Primero selecciona una carpeta.");
+        if (modeloTabla.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "No se encontraron archivos en la carpeta seleccionada.");
     }
 }
-
+}
 public void filtrarArchivosDesdeInterfaz(String tipo) {
       if (gestionarArchivos != null && gestionarArchivos.getCarpetaSeleccionada() != null) {
         gestionarArchivos.filtrarArchivosPorTipo(tipo); // Usar el método correcto
-    } else {
-        JOptionPane.showMessageDialog(null, "Primero selecciona una carpeta.");
     }
-
 }
 
     
@@ -733,6 +771,7 @@ public void filtrarArchivosDesdeInterfaz(String tipo) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button Abrircarpeta;
+    private javax.swing.JButton VerDuplicados;
     private javax.swing.JSlider Volumen;
     private javax.swing.JButton archivosBoton;
     private javax.swing.JButton borrarDuplicados;
@@ -747,6 +786,7 @@ public void filtrarArchivosDesdeInterfaz(String tipo) {
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
@@ -784,9 +824,5 @@ public void filtrarArchivosDesdeInterfaz(String tipo) {
     private javax.swing.JButton verLetra;
     private javax.swing.JButton videosBoton;
     // End of variables declaration//GEN-END:variables
-
-    void start(Stage stage) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 }
