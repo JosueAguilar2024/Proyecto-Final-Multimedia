@@ -4,6 +4,7 @@
  */
 package com.mycompany.proyectofinalmultplay;
 
+import java.awt.List;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.io.File;
@@ -17,10 +18,7 @@ import javax.swing.JOptionPane;
 
 public class ReproductorMusica {
     private MediaPlayer mediaPlayer;
-
-    
-    // Método para reproducir música usando JavaFX
-    // Método para reproducir música usando JavaFX
+   
 public void reproducirMusica(String rutaArchivo) {
     try {
         File archivoMusica = new File(rutaArchivo);
