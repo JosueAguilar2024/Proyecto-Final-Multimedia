@@ -18,21 +18,23 @@ public class ReproductorVideo {
     private MediaView mediaView;
     private JFrame videoFrame;
 
-    // Constructor modificado para aceptar un JFXPanel como parámetro
     public ReproductorVideo(JFXPanel jfxPanel) {
+        // Inicializa el JFrame pero no lo muestra todavía
         videoFrame = new JFrame("Reproductor de Video");
-        videoFrame.setSize(600, 430);
-        videoFrame.setLocation(500,300); 
         videoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        videoFrame.add(jfxPanel); //
-
-        // Crear el MediaView y configurarlo en una escena de JavaFX
+        
+        // Crear el MediaView
         mediaView = new MediaView();
+        
+        // Crear el Pane y añadir el MediaView
         Pane root = new Pane(mediaView);
         Scene scene = new Scene(root, 600, 600);
-
-        // Configura la escena en el JFXPanel usando Platform.runLater para el hilo de JavaFX
-        javafx.application.Platform.runLater(() -> jfxPanel.setScene(scene));
+        
+        // Configura la escena en el JFXPanel usando Platform.runLater
+        javafx.application.Platform.runLater(() -> {
+            jfxPanel.setScene(scene);
+            videoFrame.add(jfxPanel);
+        });
     }
 
     public void reproducirVideo(String rutaArchivo) {
@@ -44,8 +46,17 @@ public class ReproductorVideo {
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
 
+        // Agregar un Listener para ajustar el tamaño de la ventana cuando el video esté listo
+        mediaPlayer.setOnReady(() -> {
+            double videoWidth = mediaPlayer.getMedia().getWidth();
+            double videoHeight = mediaPlayer.getMedia().getHeight();
+            videoFrame.setSize((int) videoWidth, (int) videoHeight); // Ajusta el tamaño de la ventana
+            videoFrame.setLocationRelativeTo(null); // Centrar la ventana
+        });
+
         // Mostrar la ventana y comenzar a reproducir
-        videoFrame.setVisible(true);
+        videoFrame.setVisible(true); // Muestra la ventana aquí, justo antes de empezar a reproducir
         mediaPlayer.play();
     }
 }
+
