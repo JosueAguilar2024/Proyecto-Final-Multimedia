@@ -8,16 +8,9 @@ import java.io.File;
 import javax.print.attribute.standard.Media;
 import javax.swing.JOptionPane;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.*;
 import java.io.File;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.stage.Stage;
-import static javax.management.Query.attr;
 import javax.swing.table.DefaultTableModel;
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -39,7 +32,7 @@ public class Interfaz extends javax.swing.JFrame {
   private ReproductorVideo reproductorVideo;
   private GestionarArchivos gestionarArchivos;
   private MostrarFotos mostrarFotos;
-  private String rutaArchivoSeleccionado; // Variable de instancia
+  private String rutaArchivoSeleccionado; 
 
 
     /**
@@ -48,7 +41,7 @@ public class Interfaz extends javax.swing.JFrame {
     public Interfaz() {
     setTitle("APPLE MUSIC PRO");
     setDefaultCloseOperation(EXIT_ON_CLOSE);
-    setLocation(250,150); 
+    setLocation(250,50); 
     initComponents();
 
     // Configuración del JFXPanel para reproducir videos
@@ -57,27 +50,22 @@ public class Interfaz extends javax.swing.JFrame {
 
     reproductorMusica = new ReproductorMusica();
    
-    // Configuración del modelo de la tabla
     modeloTabla = new DefaultTableModel(new String[]{"NOMBRE", "ARCHIVO", "AUTOR", "ALBUM", "GENERO", "TAMAÑO", "RUTA"}, 0);
-    jTable1.setModel(modeloTabla); // Asigna el modelo a la tabla
-    
-    // Configuración de la selección de fila única
-    jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    jTable1.setModel(modeloTabla); 
+     jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    // Añadir un listener para detectar selección de filas
     jTable1.getSelectionModel().addListSelectionListener(e -> gestionarSeleccion());
 
-    // Inicializar la clase que gestiona los archivos
+    
     gestionarArchivos = new GestionarArchivos(modeloTabla);
     reproductorMusica = new ReproductorMusica();
     mostrarFotos = new MostrarFotos();
-    // Iniciar JavaFX en el hilo correcto
+   
     Platform.runLater(() -> {
-        // Puedes inicializar cualquier cosa de JavaFX aquí si es necesario
+       
     });
      
-    pack(); // Ajusta el tamaño de la ventana automáticamente según sus componentes
-
+    pack(); 
   }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -496,7 +484,7 @@ public class Interfaz extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(20, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextField1)
                             .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -544,7 +532,7 @@ public class Interfaz extends javax.swing.JFrame {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52))
+                .addContainerGap())
         );
 
         jButton3.setText("jButton3");
@@ -557,35 +545,37 @@ public class Interfaz extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 826, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+                .addGap(0, 42, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-// Variable para almacenar la ruta del archivo seleccionado
-private int filaSeleccionada = -1; // Variable para guardar la fila seleccionada
+
+private int filaSeleccionada = -1; 
 
     private void haciaAtrascancionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_haciaAtrascancionActionPerformed
-        // Detener la reproducción actual
-    reproductorMusica.detenerMusica();   
-// Obtener la fila seleccionada
+      
+  reproductorMusica.detenerMusica();   
+
     int filaSeleccionada = jTable1.getSelectedRow();
     
-    // Si no hay una selección, reproducimos desde la última canción
-    if (filaSeleccionada == -1 || filaSeleccionada == 0) {
-        filaSeleccionada = modeloTabla.getRowCount() - 1; // Ir a la última fila si estamos en la primera o no hay selección
-    } else {
-        filaSeleccionada--; // Mover hacia la canción anterior
-    }
-    // Seleccionar la fila en la tabla
+    if (filaSeleccionada == -1) {
+        JOptionPane.showMessageDialog(null, "No tienes ninguna canción seleccionada.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        return;
+    } 
+    
+    if (filaSeleccionada == 0) {
+        return; 
+    } 
+    // Si hay una fila seleccionada y no es la primera, retrocedemos una
+    filaSeleccionada--; 
     jTable1.setRowSelectionInterval(filaSeleccionada, filaSeleccionada);
     reproducirArchivoSeleccionado();
     }//GEN-LAST:event_haciaAtrascancionActionPerformed
@@ -606,7 +596,7 @@ private int filaSeleccionada = -1; // Variable para guardar la fila seleccionada
 private void gestionarSeleccion() {
     int filaSeleccionada = jTable1.getSelectedRow();
     if (filaSeleccionada != -1) {
-        rutaArchivoSeleccionado = (String) modeloTabla.getValueAt(filaSeleccionada, 6); // Suponiendo que la ruta está en la columna 6
+        rutaArchivoSeleccionado = (String) modeloTabla.getValueAt(filaSeleccionada, 6);
        
     } else {
         mostrarMensaje("No se ha seleccionado ninguna fila.");
@@ -615,35 +605,25 @@ private void gestionarSeleccion() {
 
     private void playActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playActionPerformed
         reproductorMusica.detenerMusica();
-        // selección actual de la tabla
+        
     int selectedRow = jTable1.getSelectedRow();
    //selecccionado
     if (selectedRow != -1) {
-       reproducirArchivoSeleccionado(); // Reproduce el archivo de la fila seleccionada
+       reproducirArchivoSeleccionado(); 
     } else {
      mostrarMensaje("Selecciona un archivo para reproducir");
     }
     }//GEN-LAST:event_playActionPerformed
 
 private void reproducirArchivoSeleccionado() {
-    int filaSeleccionada = jTable1.getSelectedRow();
-    if (filaSeleccionada >= 0 && filaSeleccionada < modeloTabla.getRowCount()) {
-        String rutaArchivo = obtenerRutaArchivo(filaSeleccionada);
-        reproducirArchivo(rutaArchivo);
-    } else {
-        mostrarMensaje("SelecciOn invalida.");
-    }
+      int filaSeleccionada = jTable1.getSelectedRow();
+    String rutaArchivo = obtenerRutaArchivo(filaSeleccionada);
+    reproducirArchivo(rutaArchivo);
 }
 
     // Reproduce un archivo dependiendo de su tipo (música o video)
     private void reproducirArchivo(String rutaArchivo) {
-   if (modeloTabla.getRowCount() == 0) {
-        JOptionPane.showMessageDialog(this, "No hay archivos en la lista para reproducir. Selecciona una carpeta primero.");
-        return;
-    }
-
     String extension = gestionarArchivos.getFileExtension(new File(rutaArchivo)).toLowerCase();
-
     if (esArchivoMusica(extension)) {
         reproductorMusica.reproducirMusica(rutaArchivo);
     } else if (esArchivoVideo(extension)) {
@@ -671,11 +651,9 @@ private void reproducirArchivoSeleccionado() {
         JOptionPane.showMessageDialog(this, mensaje);
     }
  
- // Obtiene la ruta del archivo en la fila seleccionada
     private String obtenerRutaArchivo(int fila) {
-    Object valorCelda = jTable1.getValueAt(fila, 6); // Ajusta el índice de columna según corresponda a "RUTA"
+    Object valorCelda = jTable1.getValueAt(fila, 6); //
     
-   // Aseguramos que el valor no sea nulo y sea un String
     return (valorCelda != null) ? valorCelda.toString() : "";
     }
     private void botonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarActionPerformed
@@ -703,7 +681,7 @@ gestionarArchivos.filtrarArchivosPorTipo("musica");
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void AbrircarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrircarpetaActionPerformed
-gestionarArchivos.seleccionarCarpeta(); // Selecciona la carpeta y la guarda en selectedFolderPath
+gestionarArchivos.seleccionarCarpeta();
   listarArchivosDesdeInterfaz(); // 
     }//GEN-LAST:event_AbrircarpetaActionPerformed
 
@@ -729,7 +707,7 @@ private void listarArchivosDesdeInterfaz() {
 }
 public void filtrarArchivosDesdeInterfaz(String tipo) {
       if (gestionarArchivos != null && gestionarArchivos.getCarpetaSeleccionada() != null) {
-        gestionarArchivos.filtrarArchivosPorTipo(tipo); // Usar el método correcto
+        gestionarArchivos.filtrarArchivosPorTipo(tipo); 
     }
 }
 
